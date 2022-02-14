@@ -17,11 +17,17 @@ function totalAmount(totalFeildId, inputAmount) {
 
     totalFeild.innerText = currentAmountNumber + inputAmount;
 }
-
-function updateTotalBalance (inputAmount, isAdd) {
+function getCurrentBalance () {
     const balanceField = document.getElementById('total-balance');
     const totalBalanceText = balanceField.innerText;
     const currentTotalBalance = parseFloat(totalBalanceText);
+    
+    return currentTotalBalance
+}
+
+function updateTotalBalance (inputAmount, isAdd) {
+    const balanceField = document.getElementById('total-balance');
+    const currentTotalBalance = getCurrentBalance ();
     if (isAdd == true) {
         balanceField.innerText = currentTotalBalance + inputAmount;
     }
@@ -57,8 +63,11 @@ document.getElementById('withdraw-btn').addEventListener('click', function () {
     // get input value
     const withdrawInputAmount = inputFieldAmount ('withdraw-input');
 
+    // get current balance amount
+    const currentTotalBalance = getCurrentBalance ();
     const withdrawError = document.getElementById('withdraw-input-error');
-    if (withdrawInputAmount > 0) {
+
+    if (withdrawInputAmount > 0 && withdrawInputAmount < currentTotalBalance) {
         // update total withdraw
         totalAmount('total-withdraw', withdrawInputAmount);
 
@@ -66,6 +75,9 @@ document.getElementById('withdraw-btn').addEventListener('click', function () {
         updateTotalBalance (withdrawInputAmount, false);
 
         withdrawError.innerText = '';
+    }
+    else if (withdrawInputAmount > currentTotalBalance) {
+        withdrawError.innerText = 'Insufficient Balance';
     }
     
     else if (withdrawInputAmount < 0) {
